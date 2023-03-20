@@ -5,6 +5,8 @@ resource "aws_instance" "test_terraform_instance"{
   #!/bin/bash
   sudo pip3 install flask
   pip3 install mysql-connector
+  aws s3 cp s3://harshal-terraform-bucket/sql/schema.sql schema.sql
+  mysql -t -vv -h localhost -u root -p"root" -A < schema.sql>output.txt
   sudo yum install mariadb
   sudo yum install httpd
   sudo touch /var/lib/cloud/scripts/per-boot/upload_ip.sh
