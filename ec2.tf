@@ -14,5 +14,6 @@ resource "aws_instance" "test_terraform_instance"{
   aws s3 cp ip.txt s3://harshal-terraform-bucket/ip/ip.txt
   EOF2
   mkdir /home/ec2-user/flask
+  sed \'s/DocumentRoot \"\/var\/www\/html\"/DocumentRoot  \"\/home\/ec2-user\/flask\"/g\' httpd.conf > httpd.conf
   EOF
 }
