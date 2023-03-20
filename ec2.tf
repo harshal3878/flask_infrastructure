@@ -1,7 +1,7 @@
 resource "aws_instance" "test_terraform_instance"{
   ami = "ami-0aa7d40eeae50c9a9"
   instance_type = "t2.micro"
-  iam_instance_profile = "${aws_iam_instance_profile. test_project_S3_role.name}"
+  iam_instance_profile = "${aws_iam_instance_profile.test_project_S3_role.name}"
   user_data = <<EOF
   #!/bin/bash
   sudo pip3 install flask
