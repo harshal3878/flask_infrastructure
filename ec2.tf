@@ -12,8 +12,6 @@ resource "aws_instance" "test_terraform_instance"{
   sudo systemctl start mariadb
   aws s3 cp s3://harshal-terraform-bucket/sql/schema.sql /home/ec2-user/schema.sql
   aws s3 cp s3://harshal-terraform-bucket/sql/mysql_secure_installation /home/ec2-user/mysql_secure_installation 
-  aws s3 cp s3://harshal-terraform-bucket/ip/html_script.sh /home/ec2-user/html_script.sh
-  sudo chmod 777 /home/ec2-user/html_script.sh
   sudo chmod 700 /home/ec2-user/mysql_secure_installation
   sudo cp /home/ec2-user/mysql_secure_installation /bin/mysql_secure_installation 
   sudo mysql_secure_installation
@@ -27,15 +25,20 @@ resource "aws_instance" "test_terraform_instance"{
   sudo chmod 777 /var/www/html
   sudo touch /var/www/html/ip.js
   sudo chmod 777 /var/www/html/ip.js
-  sudo sh /home/ec2-user/html_script.sh
   sudo touch /var/lib/cloud/scripts/per-boot/upload_ip.sh
   sudo chmod 700 upload_ip.sh
+  export ip=(`cat /home/ec2-user/ip.txt`)
+  statement="var public_ip = '$ip'"
+  echo $statement > /var/www/html/ip.js
   cat <<EOF2> /var/lib/cloud/scripts/per-boot/upload_ip.sh
   export FLASK_APP=/home/ec2-user/app.py
   curl http://checkip.amazonaws.com | cat > /home/ec2-user/ip.txt
   aws s3 cp ip.txt s3://harshal-terraform-bucket/ip/ip.txt
-  sudo sh /home/ec2-user/html_script.sh
   sudo service httpd start
+  ip=(`cat /home/ec2-user/ip.txt`)
+  statement="var public_ip = '$ip'"
+  echo $statement > /var/www/html/ip.js
+
   EOF2
   mkdir /home/ec2-user/flask
   sed \'s/DocumentRoot \"\/var\/www\/html\"/DocumentRoot  \"\/home\/ec2-user\/flask\"/g\' httpd.conf > httpd.conf
